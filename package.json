@@ -1,18 +1,20 @@
 {
   "name": "chrome-manager",
-  "version": "1.0.0",
+  "version": "1.0.5",
   "description": "Desktop application for managing Chrome profiles, proxies, and extensions",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
     "build": "electron-builder",
-    "build-only": "electron-builder --publish=never", 
+    "build-only": "electron-builder --publish=never",
     "dist": "node auto-dist.js",
+    "simple-dist": "node simple-dist.js",
     "dist-old": "electron-builder --publish=never",
     "quick-dist": "node quick-dist.js",
+    "test-dist": "node auto-dist-simple.js",
     "version:patch": "echo 1 | node auto-dist.js",
-    "version:minor": "echo 2 | node auto-dist.js", 
+    "version:minor": "echo 2 | node auto-dist.js",
     "version:major": "echo 3 | node auto-dist.js",
     "git:tag": "git tag -l | sort",
     "git:status": "git status --porcelain",
@@ -34,11 +36,13 @@
   "dependencies": {
     "chrome-launcher": "^1.1.0",
     "chrome-remote-interface": "^0.33.3",
+    "dotenv": "^16.3.1",
     "http-proxy-agent": "^7.0.2",
     "https-proxy-agent": "^7.0.6",
     "node-fetch": "^3.3.2",
     "puppeteer": "^24.16.1",
-    "socks-proxy-agent": "^8.0.5"
+    "socks-proxy-agent": "^8.0.5",
+    "ssh2-sftp-client": "^12.0.1"
   },
   "build": {
     "appId": "com.chromemanager.app",
@@ -50,7 +54,7 @@
     "files": [
       "src/**/*",
       "data/extensions.json",
-      "data/profiles.json", 
+      "data/profiles.json",
       "data/proxies.json",
       "assets/**/*",
       "package.json",
@@ -71,7 +75,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "requestedExecutionLevel": "asInvoker",
@@ -89,7 +95,9 @@
       "createStartMenuShortcut": true,
       "shortcutName": "Chrome Manager",
       "displayLanguageSelector": false,
-      "installerLanguages": ["en"],
+      "installerLanguages": [
+        "en"
+      ],
       "runAfterFinish": true,
       "deleteAppDataOnUninstall": false,
       "artifactName": "Chrome-Manager-Setup.exe"

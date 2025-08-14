@@ -1,0 +1,29 @@
+Chrome Manager v1.0.5 - 15/8/2025
+
+🎉 TÍNH NĂNG VÀ CẢI TIẾN MỚI:
+========================================
+
+✅ CẬP NHẬT PHIÊN BẢN 1.0.5:
+• Cải thiện hiệu suất và ổn định quản lý Chrome
+• Sửa lỗi nhỏ từ phiên bản trước
+• Tối ưu hóa trải nghiệm người dùng
+• Cập nhật thư viện bảo mật
+
+🔧 CẢI THIỆN HỆ THỐNG CHROME:
+• Tự động backup Chrome profiles
+• Cải thiện khả năng xử lý proxy errors
+• Tối ưu memory usage cho nhiều profiles
+• Nâng cao tốc độ khởi động Chrome instances
+
+🚀 NÂNG CẤP EXTENSION MANAGEMENT:
+• Auto-install extensions improvements  
+• Better extension pinning system
+• Enhanced toolbar management
+• Performance optimizations
+
+📅 Ngày phát hành: 15/8/2025
+🏷️ Phiên bản: 1.0.5
+👨‍💻 Phát triển bởi: Chrome Manager Team
+
+🔗 Tải xuống tại: https://toolfb.vn/CHROME/
+📧 Hỗ trợ: support@chrome-manager.vn

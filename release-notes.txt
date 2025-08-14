@@ -1,0 +1,18 @@
+Chrome Manager v1.0.3 - 14/8/2025
+
+✅ PHIÊN BẢN MỚI:
+• Cập nhật version 1.0.3
+• Cải thiện hiệu suất và ổn định
+• Sửa lỗi từ phiên bản trước
+• Tối ưu hóa trải nghiệm người dùng
+
+🚀 TÍNH NĂNG:
+• Quản lý Chrome profiles chuyên nghiệp
+• Tích hợp proxy automation
+• Auto-install Chrome extensions
+• Giao diện tiếng Việt thân thiện
+
+📦 FILES:
+• Chrome-Manager-Setup.exe - Installer
+• Portable version trong win-unpacked/
+• Auto-update system ready

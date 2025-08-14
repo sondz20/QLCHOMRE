@@ -3,6 +3,7 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
+const AutoUpdater = require('../auto-updater');
 
 class ChromeManager {
   constructor() {
@@ -15,6 +16,7 @@ class ChromeManager {
     this.chromeInstances = new Map();
     this.dataDir = path.join(__dirname, '..', 'data');
     this.profilesDir = path.join(this.dataDir, 'profiles');
+    this.autoUpdater = new AutoUpdater();
     
     this.ensureDirectories();
     this.loadData();
@@ -142,6 +144,9 @@ class ChromeManager {
     ipcMain.handle('load-workflow', async (event, workflowId) => this.loadWorkflow(workflowId));
     ipcMain.handle('delete-workflow', async (event, workflowId) => this.deleteWorkflow(workflowId));
     ipcMain.handle('run-workflow', async (event, workflowData) => this.runWorkflow(workflowData));
+    
+    // Auto-updater management
+    ipcMain.handle('check-for-updates', () => this.autoUpdater.manualCheckForUpdates());
   }
 
   createWindow() {
@@ -170,6 +175,9 @@ class ChromeManager {
       this.mainWindow.show();
       this.mainWindow.maximize(); // Tự động maximize khi mở
       console.log('Chrome Manager window loaded successfully');
+      
+      // Khởi động auto-updater sau khi window sẵn sàng
+      this.autoUpdater.start();
     });
     
     // Dev tools in development
@@ -2300,6 +2308,12 @@ app.on('window-all-closed', () => {
 
 app.on('before-quit', async () => {
   console.log('🛑 Shutting down Chrome Manager...');
+  
+  // Cleanup auto-updater
+  if (chromeManager && chromeManager.autoUpdater) {
+    chromeManager.autoUpdater.cleanup();
+  }
+  
   // Cleanup: Close all Chrome instances
   if (chromeManager && chromeManager.chromeInstances) {
     for (const [instanceId, instance] of chromeManager.chromeInstances) {

@@ -1,4 +1,5 @@
 const { exec } = require('child_process');
+const Client = require('ssh2-sftp-client');
 const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
@@ -17,12 +18,12 @@ function askQuestion(question) {
     });
 }
 
-console.log('🚀 CHROME MANAGER - AUTO BUILD & RELEASE');
-console.log('=========================================');
+console.log('🚀 CHROME MANAGER - AUTO BUILD & UPLOAD');
+console.log('=======================================');
 console.log('');
 
-console.log('🔢 BƯỚC 0: VERSION MANAGEMENT');
-console.log('=============================');
+console.log('🔢 BƯỚC 0: VERSION BUMP & GIT SYNC');
+console.log('==================================');
 
 // Đọc version hiện tại
 let packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
@@ -94,43 +95,40 @@ async function main() {
         console.log('✅ Updated version.txt');
     }
 
-    // Cập nhật release notes
+    // Cập nhật notes.txt với version mới
     const currentDate = new Date().toLocaleDateString('vi-VN');
-    const notesContent = `Chrome Manager - Quản lý Chrome Pro v${newVersion}
+    const notesContent = `Chrome Manager v${newVersion} - ${currentDate}
 
-🎉 TÍNH NĂNG MỚI VÀ CẢI TIẾN:
+🎉 TÍNH NĂNG VÀ CẢI TIẾN MỚI:
 ========================================
 
 ✅ CẬP NHẬT PHIÊN BẢN ${newVersion}:
-• Quản lý Chrome profiles một cách chuyên nghiệp
-• Tích hợp proxy automation cho từng profile
-• Auto-install và auto-pin Chrome extensions
-• Giao diện tiếng Việt thân thiện, dễ sử dụng
-• Bảng quản lý profile với đầy đủ thông tin
+• Cải thiện hiệu suất và ổn định quản lý Chrome
+• Sửa lỗi nhỏ từ phiên bản trước
+• Tối ưu hóa trải nghiệm người dùng
+• Cập nhật thư viện bảo mật
 
-🔧 TÍNH NĂNG CHÍNH:
-• ✅ Tạo và quản lý Chrome profiles không giới hạn
-• 🌐 Cấu hình proxy cho từng profile riêng biệt
-• 🧩 Quản lý extensions tự động
-• 📊 Theo dõi trạng thái running profiles
-• ⚙️ Settings và cấu hình linh hoạt
+🔧 CẢI THIỆN HỆ THỐNG CHROME:
+• Tự động backup Chrome profiles
+• Cải thiện khả năng xử lý proxy errors
+• Tối ưu memory usage cho nhiều profiles
+• Nâng cao tốc độ khởi động Chrome instances
 
-🚀 CÔNG NGHỆ:
-• Electron Desktop Application
-• Chrome DevTools Protocol integration
-• Puppeteer automation
-• Modern table-based UI design
-• Vietnamese localization
+🚀 NÂNG CẤP EXTENSION MANAGEMENT:
+• Auto-install extensions improvements  
+• Better extension pinning system
+• Enhanced toolbar management
+• Performance optimizations
 
 📅 Ngày phát hành: ${currentDate}
 🏷️ Phiên bản: ${newVersion}
 👨‍💻 Phát triển bởi: Chrome Manager Team
 
-🔗 GitHub: https://github.com/sondz20/QLCHOMRE
-📧 Hỗ trợ: [Email hỗ trợ]`;
+🔗 Tải xuống tại: https://toolfb.vn/CHROME/
+📧 Hỗ trợ: support@chrome-manager.vn`;
 
-    fs.writeFileSync('release-notes.txt', notesContent);
-    console.log('✅ Updated release-notes.txt');
+    fs.writeFileSync('notes.txt', notesContent);
+    console.log('✅ Updated notes.txt');
     console.log('');
 
     if (isVersionChanged) {
@@ -139,101 +137,140 @@ async function main() {
         await gitSync(newVersion);
     }
 
-    await autoBuildProcess();
-}
-
-async function gitSync(version) {
-    try {
-        console.log('📥 Git: Adding all changes...');
-        await runCommand('git add .');
-        
-        console.log(`📝 Git: Committing version ${version}...`);
-        await runCommand(`git commit -m "🚀 Release v${version} - Auto version bump"`);
-        
-        console.log('🏷️  Git: Creating tag...');
-        await runCommand(`git tag -a v${version} -m "Release v${version}"`);
-        
-        console.log('⬆️  Git: Pushing to GitHub...');
-        await runCommand('git push origin master');
-        
-        console.log('🏷️  Git: Pushing tags...');
-        await runCommand('git push origin --tags');
-        
-        console.log('✅ Git synchronization completed!');
-        console.log(`🔗 GitHub: https://github.com/sondz20/QLCHOMRE/releases/tag/v${version}`);
-    } catch (error) {
-        console.warn('⚠️  Git sync failed (continuing with build):', error.message);
-    }
-    console.log('');
-}
-
-async function autoBuildProcess() {
-    try {
-        console.log('🏗️  BƯỚC 2: BUILD APPLICATION');
-        console.log('============================');
-        
-        // Xóa thư mục dist cũ
-        if (fs.existsSync('dist')) {
-            console.log('🗑️  Xóa thư mục dist cũ...');
-            fs.rmSync('dist', { recursive: true, force: true });
+    async function gitSync(version) {
+        try {
+            console.log('📥 Git: Adding all changes...');
+            await runCommand('git add .');
+            
+            console.log(`📝 Git: Committing version ${version}...`);
+            await runCommand(`git commit -m "🚀 Release v${version} - Auto version bump"`);
+            
+            console.log('🏷️  Git: Creating tag...');
+            await runCommand(`git tag -a v${version} -m "Release v${version}"`);
+            
+            console.log('⬆️  Git: Pushing to GitHub...');
+            await runCommand('git push origin master');
+            
+            console.log('🏷️  Git: Pushing tags...');
+            await runCommand('git push origin --tags');
+            
+            console.log('✅ Git synchronization completed!');
+            console.log(`🔗 GitHub: https://github.com/sondz20/QLCHOMRE/releases/tag/v${version}`);
+        } catch (error) {
+            console.warn('⚠️  Git sync failed (continuing with build):', error.message);
         }
-        
-        // Build ứng dụng
-        console.log('🔨 Building Electron application...');
-        await runCommand('npm run build-only');
-        
         console.log('');
-        console.log('📋 BƯỚC 3: KIỂM TRA BUILD OUTPUT');
-        console.log('================================');
-        
-        // Kiểm tra file build
-        const expectedFiles = [
-            'dist/Chrome-Manager-Setup.exe',
-            'dist/win-unpacked/Chrome Manager - Quản lý Chrome Pro.exe'
-        ];
-        
-        let allFilesExist = true;
-        for (const file of expectedFiles) {
-            if (fs.existsSync(file)) {
-                const stats = fs.statSync(file);
-                const sizeInMB = (stats.size / (1024 * 1024)).toFixed(2);
-                console.log(`✅ ${path.basename(file)} (${sizeInMB} MB)`);
-            } else {
-                console.log(`❌ Thiếu: ${file}`);
-                allFilesExist = false;
+    }
+
+    async function autoBuildAndUpload() {
+        try {
+            console.log('🏗️  BƯỚC 2: BUILD APPLICATION');
+            console.log('============================');
+            
+            // Đóng các Chrome Manager processes đang chạy
+            console.log('🔄 Đóng Chrome Manager processes...');
+            try {
+                await runCommand('taskkill /f /im "Chrome Manager - Quản lý Chrome Pro.exe" 2>nul || echo "No process found"');
+            } catch (e) {
+                // Ignore error
             }
+            
+            // Xóa thư mục dist cũ với retry
+            console.log('🧹 Cleaning old build...');
+            for (let i = 0; i < 3; i++) {
+                try {
+                    if (fs.existsSync('dist')) {
+                        fs.rmSync('dist', { recursive: true, force: true });
+                    }
+                    break;
+                } catch (error) {
+                    if (i === 2) throw error;
+                    console.log(`⏳ Retry ${i + 1}/3...`);
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                }
+            }
+            
+            // Build ứng dụng
+            console.log('🔨 Building Chrome Manager...');
+            await runCommand('npm run build-only');
+            
+            console.log('');
+            console.log('📋 BƯỚC 3: KIỂM TRA FILES');
+            console.log('=========================');
+            
+            // Kiểm tra files
+            let allFilesExist = true;
+            for (const file of files) {
+                if (fs.existsSync(file.local)) {
+                    const stats = fs.statSync(file.local);
+                    const sizeInMB = (stats.size / (1024 * 1024)).toFixed(2);
+                    console.log(`✅ ${path.basename(file.local)} (${sizeInMB} MB)`);
+                } else {
+                    console.log(`❌ Thiếu: ${file.local}`);
+                    allFilesExist = false;
+                }
+            }
+            
+            if (!allFilesExist) {
+                throw new Error('Thiếu files cần thiết sau khi build');
+            }
+            
+            console.log('');
+            console.log('📤 BƯỚC 4: UPLOAD TO SERVER');
+            console.log('============================');
+            
+            // Upload lên server tự động
+            await uploadToServer(newVersion);
+            
+            console.log('');
+            console.log('🎊 HOÀN THÀNH TẤT CẢ!');
+            console.log('=====================');
+            console.log('✨ Build và upload thành công!');
+            console.log(`🎯 Version ${newVersion} đã sẵn sàng cho người dùng`);
+            
+        } catch (error) {
+            console.error('');
+            console.error('❌ QUÁ TRÌNH THẤT BẠI!');
+            console.error('======================');
+            console.error('Lỗi:', error.message);
+            process.exit(1);
+        } finally {
+            rl.close();
         }
-        
-        if (!allFilesExist) {
-            throw new Error('Một số files build bị thiếu');
-        }
-        
-        console.log('');
-        console.log('🎊 BUILD HOÀN THÀNH!');
-        console.log('====================');
-        console.log('✨ Chrome Manager đã được build thành công!');
-        console.log('📁 Files output trong thư mục dist/');
-        console.log('🚀 Sẵn sàng để phân phối');
-        
-        // Hiển thị thông tin chi tiết
-        console.log('');
-        console.log('📦 CÁC FILE ĐƯỢC TẠO:');
-        console.log('=====================');
-        console.log('• Chrome-Manager-Setup.exe - File cài đặt cho end users');
-        console.log('• win-unpacked/ - Portable version');
-        console.log('• release-notes.txt - Ghi chú phiên bản');
-        console.log('• version.txt - File version để auto-update');
-        
-    } catch (error) {
-        console.error('');
-        console.error('❌ BUILD THẤT BẠI!');
-        console.error('==================');
-        console.error('Lỗi:', error.message);
-        process.exit(1);
-    } finally {
-        rl.close();
     }
+
+    // Chạy quá trình build và upload
+    await autoBuildAndUpload();
 }
+
+// Bắt đầu quá trình
+main().catch(console.error);
+
+// Cấu hình SFTP
+const config = {
+    host: '103.90.224.225',
+    username: 'root',
+    password: '4k9Ym61ZIhiAWx796YVn0mVK',
+    port: 22
+};
+
+const remoteDir = '/www/wwwroot/toolfb.vn/public/CHROME/';
+
+// Files cần upload
+const files = [
+    {
+        local: 'dist/Chrome-Manager-Setup.exe',
+        remote: remoteDir + 'Chrome-Manager-Setup.exe'
+    },
+    {
+        local: 'notes.txt', 
+        remote: remoteDir + 'notes.txt'
+    },
+    {
+        local: 'version.txt',
+        remote: remoteDir + 'version.txt'
+    }
+];
 
 function runCommand(command) {
     return new Promise((resolve, reject) => {
@@ -250,5 +287,52 @@ function runCommand(command) {
     });
 }
 
-// Bắt đầu quá trình
-main().catch(console.error);
+async function uploadToServer(version) {
+    const sftp = new Client();
+    
+    try {
+        console.log('🔐 Kết nối đến server Chrome Manager...');
+        await sftp.connect(config);
+        console.log('✅ Kết nối thành công!');
+        console.log('');
+        
+        // Đảm bảo thư mục remote tồn tại
+        try {
+            await sftp.mkdir(remoteDir, true);
+        } catch (error) {
+            // Thư mục có thể đã tồn tại
+        }
+        
+        for (const file of files) {
+            if (!fs.existsSync(file.local)) {
+                console.log(`❌ File không tồn tại: ${file.local}`);
+                continue;
+            }
+            
+            const stats = fs.statSync(file.local);
+            const sizeInMB = (stats.size / (1024 * 1024)).toFixed(2);
+            
+            console.log(`📤 Uploading: ${path.basename(file.local)} (${sizeInMB} MB)`);
+            
+            await sftp.put(file.local, file.remote);
+            console.log(`✅ Uploaded: ${path.basename(file.remote)}`);
+        }
+        
+        console.log('');
+        console.log('🎉 UPLOAD HOÀN TẤT!');
+        console.log('===================');
+        console.log('✅ Tất cả files đã được upload thành công');
+        console.log(`📋 Version ${version} đã sẵn sàng cho người dùng`);
+        console.log('');
+        console.log('🔗 Download URLs:');
+        console.log(`   • https://toolfb.vn/CHROME/Chrome-Manager-Setup.exe`);
+        console.log(`   • https://toolfb.vn/CHROME/notes.txt`);
+        console.log(`   • https://toolfb.vn/CHROME/version.txt`);
+        
+    } catch (error) {
+        console.error('❌ Lỗi upload:', error.message);
+        throw error;
+    } finally {
+        await sftp.end();
+    }
+}
