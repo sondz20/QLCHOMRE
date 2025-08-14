@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Demo Extension",
+  "version": "1.0.0",
+  "description": "Extension demo để test chức năng quản lý extension",
+  "permissions": [
+    "activeTab"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Demo Extension"
+  },
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

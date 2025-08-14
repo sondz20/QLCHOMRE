@@ -1,0 +1,28 @@
+[
+  {
+    "id": "1755012571752",
+    "name": "SMIT Connect",
+    "description": "SMIT cross-platform data connection extension",
+    "version": "1.0.8",
+    "path": "C:\\Users\\SOWN\\Documents\\FPlus\\ChromeProfiles\\ChromeExtensions\\custom\\ext1\\manifest.json",
+    "crxPath": "",
+    "chromeWebStoreId": "",
+    "icon": "C:\\Users\\SOWN\\Documents\\FPlus\\ChromeProfiles\\ChromeExtensions\\custom\\ext1\\assets\\icons.png",
+    "enabled": true,
+    "category": "Ad Blocker",
+    "created": "2025-08-12T15:29:31.752Z"
+  },
+  {
+    "id": "1755085236609",
+    "name": "ToolFB.vn",
+    "description": "Extension hỗ trợ quản lý tài khoản Facebook",
+    "version": "1.6.5",
+    "path": "C:\\Users\\SOWN\\Documents\\FPlus\\ChromeProfiles\\ChromeExtensions\\custom\\ext2\\manifest.json",
+    "crxPath": "",
+    "chromeWebStoreId": "",
+    "icon": "C:\\Users\\SOWN\\Documents\\FPlus\\ChromeProfiles\\ChromeExtensions\\custom\\ext2\\icon-48.png",
+    "enabled": true,
+    "category": "Other",
+    "created": "2025-08-13T11:40:36.609Z"
+  }
+]

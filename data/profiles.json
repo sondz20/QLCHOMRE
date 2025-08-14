@@ -1,0 +1,67 @@
+[
+  {
+    "id": "chrome_1755084150233_bwnyvs6m8",
+    "name": "sadasdasdasd",
+    "cardId": "",
+    "proxy": null,
+    "template": null,
+    "settings": {},
+    "notes": "",
+    "created": "2025-08-13T11:22:30.233Z",
+    "path": "C:\\Users\\SOWN\\Desktop\\QLCHROME\\data\\profiles\\chrome_1755084150233_bwnyvs6m8",
+    "extensions": [
+      {
+        "id": "1755012571752",
+        "name": "SMIT Connect",
+        "enabled": true,
+        "installedAt": "2025-08-13T11:22:30.233Z",
+        "autoInstalled": true
+      },
+      {
+        "id": "1755085236609",
+        "name": "ToolFB.vn",
+        "enabled": true,
+        "installedAt": "2025-08-13T11:40:36.610Z",
+        "autoInstalled": true
+      }
+    ],
+    "EXTENSIONS": [
+      "SMIT Connect",
+      "ToolFB.vn"
+    ],
+    "updated": "2025-08-14T08:30:10.494Z"
+  },
+  {
+    "id": "chrome_1755138981201_au9yocphk",
+    "name": "asadadsdasd",
+    "cardId": "card_1754996952619",
+    "groupId": "default",
+    "proxy": null,
+    "template": null,
+    "settings": {},
+    "notes": "",
+    "created": "2025-08-14T02:36:21.202Z",
+    "path": "C:\\Users\\SOWN\\Desktop\\QLCHROME\\data\\profiles\\chrome_1755138981201_au9yocphk",
+    "extensions": [
+      {
+        "id": "1755012571752",
+        "name": "SMIT Connect",
+        "enabled": true,
+        "installedAt": "2025-08-14T02:36:21.202Z",
+        "autoInstalled": true
+      },
+      {
+        "id": "1755085236609",
+        "name": "ToolFB.vn",
+        "enabled": true,
+        "installedAt": "2025-08-14T02:36:21.202Z",
+        "autoInstalled": true
+      }
+    ],
+    "updated": "2025-08-14T08:30:10.497Z",
+    "EXTENSIONS": [
+      "SMIT Connect",
+      "ToolFB.vn"
+    ]
+  }
+]

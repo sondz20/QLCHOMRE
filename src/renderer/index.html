@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chrome Manager - Quản lý Chrome Profiles & Proxy</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="confirm-modal.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <h1><i class="fab fa-chrome"></i> Chrome Manager</h1>
+                <div class="header-stats">
+                    <span class="stat-item">
+                        <i class="fas fa-user"></i>
+                        <span id="profileCount">0</span> Profiles
+                    </span>
+                    <span class="stat-item">
+                        <i class="fas fa-network-wired"></i>
+                        <span id="proxyCount">0</span> Proxies
+                    </span>
+                    <span class="stat-item">
+                        <i class="fas fa-play-circle"></i>
+                        <span id="runningCount">0</span> Running
+                    </span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Top Navigation Bar -->
+            <nav class="top-nav">
+                <div class="nav-tabs">
+                    <button class="nav-item active" data-tab="profiles">
+                        <i class="fas fa-user"></i>
+                        <span>Profiles</span>
+                    </button>
+                    <button class="nav-item" data-tab="proxies">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Proxies</span>
+                    </button>
+                    <button class="nav-item" data-tab="extensions">
+                        <i class="fas fa-puzzle-piece"></i>
+                        <span>Extensions</span>
+                    </button>
+                    <button class="nav-item" data-tab="running">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Running</span>
+                    </button>
+                    <button class="nav-item" data-tab="settings">
+                        <i class="fas fa-cog"></i>
+                        <span>Cài Đặt</span>
+                    </button>
+                </div>
+            </nav>
+            
+            <!-- Content with Sidebar -->
+            <div class="content-with-sidebar">
+                <!-- Left Groups Sidebar -->
+                <aside class="groups-sidebar">
+                    <div class="groups-header">
+                        <h3><i class="fas fa-layer-group"></i> Nhóm</h3>
+                        <button class="btn btn-sm btn-primary" id="createGroupBtnSidebar">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <div class="groups-list" id="groupsList">
+                        <!-- Groups will be loaded here -->
+                    </div>
+                </aside>
+
+                <!-- Content Area -->
+                <main class="content-area">
+                <!-- Profiles Tab -->
+                <div id="profiles-tab" class="tab-content active">
+                    <div class="tab-header">
+                        <h2>Quản lý Profiles</h2>
+                    </div>
+                    
+                    <!-- Search and Filter Bar -->
+                    <div class="search-filter-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="profileSearch" placeholder="Tìm kiếm profiles...">
+                        </div>
+                        <div class="filter-options">
+                            <select id="proxyFilter">
+                                <option value="">Tất cả proxy</option>
+                                <option value="with-proxy">Có proxy</option>
+                                <option value="no-proxy">Không proxy</option>
+                            </select>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" id="createProfileBtn" title="Tạo profile mới">
+                                <i class="fas fa-plus"></i> Tạo Profile
+                            </button>
+                            <button class="btn btn-info" id="addCardBtn" title="Quản lý thẻ">
+                                <i class="fas fa-credit-card"></i> Thêm thẻ
+                            </button>
+                            <div class="dropdown-container" style="display: none;" id="editProfileDropdown">
+                                <button class="btn btn-secondary dropdown-toggle" id="editProfileBtn" title="Edit hồ sơ đã chọn">
+                                    <i class="fas fa-edit"></i> Edit Hồ Sơ
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                                <div class="dropdown-menu" id="editProfileMenu">
+                                    <button class="dropdown-item" id="editCardsBtn">
+                                        <i class="fas fa-credit-card"></i> Thêm/Sửa Thẻ
+                                    </button>
+                                    <button class="dropdown-item" id="editGroupsBtn">
+                                        <i class="fas fa-layer-group"></i> Thêm/Chuyển Nhóm
+                                    </button>
+                                    <button class="dropdown-item" id="bulkImportProxyBtn">
+                                        <i class="fas fa-list"></i> Thêm/Sửa Proxy
+                                    </button>
+                                    <button class="dropdown-item" id="editBookmarksBtn">
+                                        <i class="fas fa-bookmark"></i> Thêm Dấu Trang
+                                    </button>
+                                    <button class="dropdown-item" id="editTabsBtn">
+                                        <i class="fas fa-window-restore"></i> Quản Lý Tabs
+                                    </button>
+                                </div>
+                            </div>
+                            <button class="btn btn-success" id="openSelectedBtn" title="Mở các hồ sơ đã chọn" style="display: none;">
+                                <i class="fas fa-play"></i> Mở
+                            </button>
+                            <button class="btn btn-warning" id="closeSelectedBtn" title="Tắt các hồ sơ đã chọn" style="display: none;">
+                                <i class="fas fa-stop"></i> Tắt
+                            </button>
+                            <button class="btn btn-danger" id="deleteSelectedProfilesBtn" title="Xóa các hồ sơ đã chọn" style="display: none;">
+                                <i class="fas fa-trash"></i> Xóa
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="profiles-table-container">
+                        <table class="profiles-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="selectAllProfiles">
+                                    </th>
+                                    <th>STT</th>
+                                    <th>Tên Profile</th>
+                                    <th>Nhóm</th>
+                                    <th>Thẻ</th>
+                                    <th>Extensions</th>
+                                    <th>Proxy</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="profilesTableBody">
+                                <!-- Profiles sẽ được load động -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Proxies Tab -->
+                <div id="proxies-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>Quản lý Proxies</h2>
+                        <div class="tab-actions">
+                            <button class="btn btn-warning" id="cleanupDuplicateProxiesBtn" title="Dọn dẹp proxy trùng lặp">
+                                <i class="fas fa-broom"></i> Dọn dẹp trùng lặp
+                            </button>
+                            <button class="btn btn-info" id="checkSelectedProxiesBtn" title="Check proxy đã chọn">
+                                <i class="fas fa-check-circle"></i> Check Selected
+                            </button>
+                            <button class="btn btn-secondary" id="importProxiesBtn">
+                                <i class="fas fa-upload"></i> Import
+                            </button>
+                            <button class="btn btn-primary" id="addProxyBtn">
+                                <i class="fas fa-plus"></i> Thêm Proxy
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="proxies-table-container">
+                        <table class="proxies-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <input type="checkbox" id="selectAllProxies">
+                                    </th>
+                                    <th>Host</th>
+                                    <th>Port</th>
+                                    <th>Username</th>
+                                    <th>Type</th>
+                                    <th>Status</th>
+                                    <th>Sử dụng</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="proxiesTableBody">
+                                <!-- Proxies sẽ được load động -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Extensions Tab -->
+                <div id="extensions-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>Quản lý Extensions</h2>
+                    </div>
+                    
+                    <!-- Search and Filter Bar -->
+                    <div class="search-filter-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="extensionSearch" placeholder="Tìm kiếm extensions...">
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-secondary" id="refreshExtensionsBtn" title="Làm mới danh sách">
+                                <i class="fas fa-refresh"></i> Làm mới
+                            </button>
+                            <button class="btn btn-primary" id="addExtensionBtn" title="Thêm extension mới">
+                                <i class="fas fa-plus"></i> Thêm Extension
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Extensions Grid -->
+                    <div class="extensions-grid" id="extensionsGrid">
+                        <!-- Extensions sẽ được load động -->
+                    </div>
+                </div>
+
+                <!-- Running Tab -->
+                <div id="running-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2>Chrome Instances Đang Chạy</h2>
+                        <button class="btn btn-danger" id="stopAllBtn">
+                            <i class="fas fa-stop"></i> Dừng Tất Cả
+                        </button>
+                    </div>
+                    
+                    <div class="running-instances" id="runningInstances">
+                        <!-- Running instances sẽ được load động -->
+                    </div>
+                </div>
+
+            <!-- Settings Tab -->
+                <div id="settings-tab" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-cog"></i> Cài Đặt Hệ Thống</h2>
+                    </div>
+                    
+                    <div class="settings-actions" style="margin-bottom: 2rem;">
+                        <button class="btn btn-primary" id="saveSettings">
+                            <i class="fas fa-save"></i> Lưu Cài Đặt
+                        </button>
+                        <button class="btn btn-secondary" id="resetSettings">
+                            <i class="fas fa-undo"></i> Khôi Phục Mặc Định
+                        </button>
+                        <button class="btn btn-info" id="exportSettings">
+                            <i class="fas fa-download"></i> Xuất Cài Đặt
+                        </button>
+                        <button class="btn btn-warning" id="importSettings">
+                            <i class="fas fa-upload"></i> Nhập Cài Đặt
+                        </button>
+                    </div>
+                    <div class="settings-content">
+                        <div class="settings-section">
+                            <h3><i class="fas fa-chrome"></i> Chrome Settings</h3>
+                            <div class="setting-item">
+                                <label>Chrome Path:</label>
+                                <div class="setting-item-horizontal">
+                                    <input type="text" id="chromePath" placeholder="Đường dẫn đến Chrome executable">
+                                    <button class="btn btn-sm btn-secondary" id="browseChromePath">
+                                        <i class="fas fa-folder-open"></i> Browse
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="setting-item">
+                                <label>User Data Path:</label>
+                                <div class="setting-item-horizontal">
+                                    <input type="text" id="userDataPath" placeholder="Đường dẫn lưu trữ profile data">
+                                    <button class="btn btn-sm btn-secondary" id="browseUserDataPath">
+                                        <i class="fas fa-folder-open"></i> Browse
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-network-wired"></i> Proxy Settings</h3>
+                            <div class="setting-item">
+                                <label>Default Proxy Type:</label>
+                                <select id="defaultProxyType">
+                                    <option value="http">HTTP</option>
+                                    <option value="socks5">SOCKS5</option>
+                                    <option value="socks4">SOCKS4</option>
+                                </select>
+                            </div>
+                            <div class="setting-item">
+                                <label>Proxy Timeout (seconds):</label>
+                                <input type="number" id="proxyTimeout" value="30" min="5" max="300">
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-puzzle-piece"></i> Extension Settings</h3>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="autoInstallExtensions" checked>
+                                    Tự động cài đặt extensions cho profile mới
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="autoPinExtensions" checked>
+                                    Tự động pin extensions
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="settings-section">
+                            <h3><i class="fas fa-shield-alt"></i> Security Settings</h3>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="enableProfileEncryption">
+                                    Mã hóa dữ liệu profile
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label>
+                                    <input type="checkbox" id="clearCacheOnClose">
+                                    Xóa cache khi đóng Chrome
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Create Profile Modal -->
+    <div id="createProfileModal" class="modal-overlay">
+        <div class="modal-container modern-modal">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-user-plus"></i>
+                    Tạo Profile Mới
+                </h3>
+                <button class="modal-close-btn" onclick="chromeManager.hideModal('createProfileModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <form id="createProfileForm" class="modern-form">
+                    <!-- Thông tin cơ bản -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-info-circle"></i>
+                            Thông tin cơ bản
+                        </h4>
+                        
+                        <div class="form-group">
+                            <label for="profileName" class="form-label">
+                                Tên Profile <span class="required">*</span>
+                            </label>
+                            <input type="text" 
+                                   id="profileName" 
+                                   name="profileName"
+                                   class="form-input"
+                                   required 
+                                   placeholder="Nhập tên profile"
+                                   minlength="3"
+                                   maxlength="50">
+                            <span class="form-hint">3-50 ký tự</span>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="profileGroup" class="form-label">Nhóm</label>
+                                <select id="profileGroup" name="profileGroup" class="form-select">
+                                    <option value="">Không nhóm</option>
+                                    <!-- Groups sẽ được load động -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="profileCard" class="form-label">Thẻ thanh toán</label>
+                                <select id="profileCard" name="profileCard" class="form-select">
+                                    <option value="">Chọn thẻ</option>
+                                    <!-- Cards sẽ được load động -->
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Cấu hình Proxy -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-network-wired"></i>
+                            Cấu hình Proxy
+                        </h4>
+                        
+                        <div class="proxy-tabs-container">
+                            <div class="proxy-tabs">
+                                <button type="button" class="proxy-tab active" data-proxy-type="none">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Trực tiếp</span>
+                                </button>
+                                <button type="button" class="proxy-tab" data-proxy-type="existing">
+                                    <i class="fas fa-list"></i>
+                                    <span>Có sẵn</span>
+                                </button>
+                                <button type="button" class="proxy-tab" data-proxy-type="common">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Thêm mới</span>
+                                </button>
+                            </div>
+                            
+                            <!-- None Proxy Content -->
+                            <div id="proxy-none" class="proxy-tab-content active">
+                                <div class="proxy-info-card">
+                                    <div class="info-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <h5>Kết nối trực tiếp</h5>
+                                        <p>Không sử dụng proxy</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Existing Proxy Content -->
+                            <div id="proxy-existing" class="proxy-tab-content">
+                                <div class="form-group">
+                                    <label class="form-label">Chọn proxy từ danh sách</label>
+                                    <div class="proxy-selector">
+                                        <div class="search-container">
+                                            <input type="text" 
+                                                   id="proxySearchInput" 
+                                                   class="search-input"
+                                                   placeholder="Tìm kiếm proxy...">
+                                        </div>
+                                        <div class="proxy-list" id="existingProxyList">
+                                            <div class="proxy-list-empty">
+                                                <i class="fas fa-network-wired"></i>
+                                                <h5>Chưa có proxy</h5>
+                                                <p>Thêm ở tab "Quản lý Proxy"</p>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" id="selectedProxyId" name="selectedProxyId">
+                                    </div>
+                                    
+                                    <div class="action-row">
+                                        <button type="button" class="btn btn-sm btn-secondary" id="refreshProxyListBtn">
+                                            <i class="fas fa-sync-alt"></i>
+                                            Làm mới
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-info" id="testSelectedProxyBtn">
+                                            <i class="fas fa-vial"></i>
+                                            Kiểm tra
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Common Proxy Content -->
+                            <div id="proxy-common" class="proxy-tab-content">
+                                <div class="form-group">
+                                    <label for="proxyType" class="form-label">Loại proxy</label>
+                                    <select id="proxyType" name="proxyType" class="form-select">
+                                        <option value="HTTP">HTTP</option>
+                                        <option value="HTTPS">HTTPS</option>
+                                        <option value="SOCKS4">SOCKS4</option>
+                                        <option value="SOCKS5">SOCKS5</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="proxyHost" class="form-label">Host</label>
+                                        <input type="text" 
+                                               id="proxyHost" 
+                                               name="proxyHost" 
+                                               class="form-input"
+                                               placeholder="192.168.1.1"
+                                               title="Nhập host:port:username:password để tự động điền">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="proxyPort" class="form-label">Port</label>
+                                        <input type="number" 
+                                               id="proxyPort" 
+                                               name="proxyPort" 
+                                               class="form-input"
+                                               placeholder="8080" 
+                                               min="1" 
+                                               max="65535">
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="proxyUsername" class="form-label">Username</label>
+                                        <input type="text" 
+                                               id="proxyUsername" 
+                                               name="proxyUsername" 
+                                               class="form-input"
+                                               placeholder="Tùy chọn">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="proxyPassword" class="form-label">Password</label>
+                                        <input type="password" 
+                                               id="proxyPassword" 
+                                               name="proxyPassword" 
+                                               class="form-input"
+                                               placeholder="Tùy chọn">
+                                    </div>
+                                </div>
+                                
+                                <div class="action-row">
+                                    <button type="button" class="btn btn-sm btn-secondary" id="testProxyBtn">
+                                        <i class="fas fa-vial"></i>
+                                        Kiểm tra
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-success" id="saveProxyBtn">
+                                        <i class="fas fa-save"></i>
+                                        Lưu proxy
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ghi chú -->
+                    <div class="form-section">
+                        <h4 class="section-title">
+                            <i class="fas fa-sticky-note"></i>
+                            Ghi chú
+                        </h4>
+                        
+                        <div class="form-group">
+                            <label for="profileNotes" class="form-label">Ghi chú</label>
+                            <textarea id="profileNotes" 
+                                      name="profileNotes" 
+                                      class="form-textarea"
+                                      placeholder="Mô tả ngắn..."
+                                      rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+                            <div class="modal-actions">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="chromeManager.hideModal('createProfileModal')">
+                    <i class="fas fa-times"></i>
+                    Hủy
+                </button>
+                <button type="submit" class="modal-btn modal-btn-primary" form="createProfileForm">
+                    <i class="fas fa-plus"></i>
+                    Tạo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Proxy Modal -->
+    <div id="addProxyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm Proxy</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            
+            <!-- Proxy Mode Tabs -->
+            <div class="proxy-mode-tabs">
+                <button type="button" class="tab-btn active" data-mode="single">Thêm 1 Proxy</button>
+                <button type="button" class="tab-btn" data-mode="bulk">Import List</button>
+            </div>
+
+            <!-- Single Proxy Form -->
+            <div id="singleProxyMode" class="proxy-mode active">
+                <form id="addProxyForm">
+                    <div class="form-group">
+                        <label for="proxyHost">Host:</label>
+                        <input type="text" id="proxyHost" required placeholder="127.0.0.1 hoặc proxy.example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="proxyPort">Port:</label>
+                        <input type="number" id="proxyPort" required placeholder="8080">
+                    </div>
+                    <div class="form-group">
+                        <label for="proxyUsername">Username (tùy chọn):</label>
+                        <input type="text" id="proxyUsername" placeholder="Tên đăng nhập">
+                    </div>
+                    <div class="form-group">
+                        <label for="proxyPassword">Password (tùy chọn):</label>
+                        <input type="password" id="proxyPassword" placeholder="Mật khẩu">
+                    </div>
+                    <div class="form-group">
+                        <label for="proxyType">Loại Proxy:</label>
+                        <select id="proxyType">
+                            <option value="http">HTTP</option>
+                            <option value="socks4">SOCKS4</option>
+                            <option value="socks5">SOCKS5</option>
+                        </select>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-btn modal-btn-cancel modal-cancel">Hủy</button>
+                        <button type="submit" class="modal-btn modal-btn-primary">Thêm Proxy</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Bulk Import Mode -->
+            <div id="bulkProxyMode" class="proxy-mode">
+                <form id="bulkProxyForm">
+                    <div class="form-group">
+                        <label for="proxyList">Danh sách Proxy:</label>
+                        <textarea id="proxyList" rows="10" placeholder="Nhập danh sách proxy (mỗi proxy 1 dòng)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="defaultProxyType">Loại proxy mặc định (cho format host:port):</label>
+                        <select id="defaultProxyType">
+                            <option value="http">HTTP</option>
+                            <option value="socks4">SOCKS4</option>
+                            <option value="socks5">SOCKS5</option>
+                        </select>
+                    </div>
+                    <div class="bulk-preview" id="bulkPreview" style="display: none;">
+                        <h4>Preview (<span id="previewCount">0</span> proxies):</h4>
+                        <div id="previewList" class="preview-list"></div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="modal-btn modal-btn-cancel modal-cancel">Hủy</button>
+                        <button type="button" id="checkProxiesBtn" class="btn btn-info">
+                            <i class="fas fa-search"></i> Check Proxy
+                        </button>
+                        <button type="submit" id="importProxiesBtn" class="modal-btn modal-btn-primary" disabled>
+                            <i class="fas fa-plus"></i> Thêm Proxy
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Templates Modal -->
+    <div id="templatesModal" class="modal">
+        <div class="modal-content large-modal">
+            <div class="modal-header">
+                <h3>Profile Templates</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="templates-content">
+                <div class="templates-grid">
+                    <div class="template-card" data-template="social-media">
+                        <div class="template-icon">
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                        <h4>Social Media</h4>
+                        <p>Tối ưu cho Facebook, Instagram, Twitter</p>
+                        <ul>
+                            <li>Extensions: AdBlock, SocialShare</li>
+                            <li>Privacy: Medium</li>
+                            <li>Performance: Optimized</li>
+                        </ul>
+                        <button class="btn btn-primary btn-sm" onclick="chromeManager.createFromTemplate('social-media')">
+                            Sử dụng Template
+                        </button>
+                    </div>
+                    
+                    <div class="template-card" data-template="e-commerce">
+                        <div class="template-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h4>E-commerce</h4>
+                        <p>Dành cho mua sắm online, affiliate</p>
+                        <ul>
+                            <li>Extensions: Honey, CashBack</li>
+                            <li>Privacy: High</li>
+                            <li>Auto-fill: Enabled</li>
+                        </ul>
+                        <button class="btn btn-primary btn-sm" onclick="chromeManager.createFromTemplate('e-commerce')">
+                            Sử dụng Template
+                        </button>
+                    </div>
+                    
+                    <div class="template-card" data-template="development">
+                        <div class="template-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h4>Development</h4>
+                        <p>Cho developers, testing, debugging</p>
+                        <ul>
+                            <li>Extensions: React DevTools, Redux</li>
+                            <li>DevTools: Always open</li>
+                            <li>CORS: Disabled</li>
+                        </ul>
+                        <button class="btn btn-primary btn-sm" onclick="chromeManager.createFromTemplate('development')">
+                            Sử dụng Template
+                        </button>
+                    </div>
+                    
+                    <div class="template-card" data-template="privacy-focus">
+                        <div class="template-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Privacy Focus</h4>
+                        <p>Bảo mật cao, duyệt web ẩn danh</p>
+                        <ul>
+                            <li>Extensions: uBlock Origin, Privacy Badger</li>
+                            <li>Tracking: Disabled</li>
+                            <li>JavaScript: Limited</li>
+                        </ul>
+                        <button class="btn btn-primary btn-sm" onclick="chromeManager.createFromTemplate('privacy-focus')">
+                            Sử dụng Template
+                        </button>
+                    </div>
+                    
+                    <div class="template-card" data-template="gaming">
+                        <div class="template-icon">
+                            <i class="fas fa-gamepad"></i>
+                        </div>
+                        <h4>Gaming</h4>
+                        <p>Tối ưu cho gaming, streaming</p>
+                        <ul>
+                            <li>Extensions: GameBooster, Twitch</li>
+                            <li>Performance: Maximum</li>
+                            <li>Memory: Optimized</li>
+                        </ul>
+                        <button class="btn btn-primary btn-sm" onclick="chromeManager.createFromTemplate('gaming')">
+                            Sử dụng Template
+                        </button>
+                    </div>
+                    
+                    <div class="template-card" data-template="business">
+                        <div class="template-icon">
+                            <i class="fas fa-briefcase"></i>
+                        </div>
+                        <h4>Business</h4>
+                        <p>Công việc, họp online, productivity</p>
+                        <ul>
+                            <li>Extensions: Google Workspace, Zoom</li>
+                            <li>Notifications: Enabled</li>
+                            <li>Sync: Corporate</li>
+                        </ul>
+                        <button class="btn btn-primary btn-sm" onclick="chromeManager.createFromTemplate('business')">
+                            Sử dụng Template
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Modal -->
+    <div id="bulkActionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Bulk Actions - <span id="selectedCount">0</span> profiles selected</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="bulk-actions-content">
+                <div class="action-group">
+                    <h4>Chrome Actions</h4>
+                    <button class="btn btn-success" id="bulkStart">
+                        <i class="fas fa-play"></i> Start Selected
+                    </button>
+                    <button class="btn btn-info" id="bulkStartSimple">
+                        <i class="fas fa-rocket"></i> Start Simple (Env Auth) ✅
+                    </button>
+                    <button class="btn btn-warning" id="bulkStartPAC">
+                        <i class="fas fa-shield-alt"></i> Start PAC (Enterprise) 🏆
+                    </button>
+                    <button class="btn btn-primary" id="bulkStartPuppeteer">
+                        <i class="fas fa-robot"></i> Start with Puppeteer (Auto Auth)
+                    </button>
+                    <button class="btn btn-danger" id="bulkStop">
+                        <i class="fas fa-stop"></i> Stop Selected
+                    </button>
+                </div>
+                
+                <div class="action-group">
+                    <h4>Profile Management</h4>
+                    <button class="btn btn-warning" id="bulkExport">
+                        <i class="fas fa-download"></i> Export Selected
+                    </button>
+                    <button class="btn btn-info" id="bulkClone">
+                        <i class="fas fa-copy"></i> Clone Selected
+                    </button>
+                </div>
+                
+                <div class="action-group">
+                    <h4>Proxy Management</h4>
+                    <select id="bulkProxySelect">
+                        <option value="">Choose proxy for selected profiles</option>
+                    </select>
+                    <button class="btn btn-primary" id="bulkAssignProxy">
+                        <i class="fas fa-network-wired"></i> Assign Proxy
+                    </button>
+                </div>
+                
+                <div class="action-group dangerous">
+                    <h4>Dangerous Actions</h4>
+                    <button class="btn btn-danger" id="bulkDelete">
+                        <i class="fas fa-trash"></i> Delete Selected
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Group Modal -->
+    <div id="createGroupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Tạo Nhóm Mới</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="createGroupForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="groupName">Tên Nhóm: <span class="required">*</span></label>
+                        <input type="text" 
+                               id="groupName" 
+                               name="groupName"
+                               required 
+                               placeholder="Ví dụ: Social Media, E-commerce, Work..."
+                               minlength="2"
+                               maxlength="30">
+                        <small class="form-help">Tên nhóm phải có ít nhất 2 ký tự</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="groupColor">Màu nhóm:</label>
+                        <select id="groupColor" name="groupColor">
+                            <option value="blue">🔵 Xanh dương</option>
+                            <option value="green">🟢 Xanh lá</option>
+                            <option value="red">🔴 Đỏ</option>
+                            <option value="orange">🟠 Cam</option>
+                            <option value="purple">🟣 Tím</option>
+                            <option value="yellow">🟡 Vàng</option>
+                            <option value="pink">🩷 Hồng</option>
+                            <option value="gray">⚫ Xám</option>
+                        </select>
+                        <small class="form-help">Màu sắc để dễ phân biệt nhóm</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="groupDescription">Mô tả (tùy chọn):</label>
+                        <textarea id="groupDescription" 
+                                  name="groupDescription" 
+                                  placeholder="Mô tả mục đích và nội dung của nhóm..."
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-btn modal-btn-cancel modal-close">Hủy</button>
+                    <button type="submit" class="modal-btn modal-btn-primary">Tạo Nhóm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Group Modal -->
+    <div id="editGroupModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Chỉnh Sửa Nhóm</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="editGroupForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="editGroupName">Tên Nhóm: <span class="required">*</span></label>
+                        <input type="text" 
+                               id="editGroupName" 
+                               name="groupName"
+                               required 
+                               placeholder="Ví dụ: Social Media, E-commerce, Work..."
+                               minlength="2"
+                               maxlength="30">
+                        <small class="form-help">Tên nhóm phải có ít nhất 2 ký tự</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="editGroupColor">Màu nhóm:</label>
+                        <select id="editGroupColor" name="groupColor">
+                            <option value="blue">🔵 Xanh dương</option>
+                            <option value="green">🟢 Xanh lá</option>
+                            <option value="red">🔴 Đỏ</option>
+                            <option value="orange">🟠 Cam</option>
+                            <option value="purple">🟣 Tím</option>
+                            <option value="yellow">🟡 Vàng</option>
+                            <option value="pink">🩷 Hồng</option>
+                            <option value="gray">⚫ Xám</option>
+                        </select>
+                        <small class="form-help">Màu sắc để dễ phân biệt nhóm</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="editGroupDescription">Mô tả (tùy chọn):</label>
+                        <textarea id="editGroupDescription" 
+                                  name="groupDescription" 
+                                  placeholder="Mô tả mục đích và nội dung của nhóm..."
+                                  rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="modal-btn modal-btn-cancel modal-close">Hủy</button>
+                    <button type="submit" class="modal-btn modal-btn-primary">Cập Nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Đang xử lý...</p>
+        </div>
+    </div>
+
+    <!-- Card Management Modal -->
+    <div id="cardManagementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Danh sách thẻ</h3>
+                <button type="button" class="modal-close" onclick="chromeManager.hideModal('cardManagementModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card-management-container">
+                    <div class="search-add-container">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="cardSearchInput" placeholder="Tìm kiếm...">
+                        </div>
+                        <button class="btn btn-success" id="addNewCardBtn">
+                            <i class="fas fa-plus"></i> Thêm thẻ mới
+                        </button>
+                    </div>
+                    
+                    <div class="cards-list-container">
+                        <div class="cards-header">
+                            <span>Tên thẻ</span>
+                            <span>Hành động</span>
+                        </div>
+                        <div id="cardsList" class="cards-list">
+                            <!-- Cards will be rendered here -->
+                        </div>
+                    </div>
+                    
+                    <div class="pagination-container">
+                        <span>Số dòng mỗi trang:</span>
+                        <select id="cardsPerPage">
+                            <option value="10">10</option>
+                            <option value="20">20</option>
+                            <option value="30" selected>30</option>
+                            <option value="50">50</option>
+                        </select>
+                        <div class="pagination-info">
+                            <span id="cardsPaginationInfo">1-4 trên 4</span>
+                            <button id="cardsPrevPage" class="pagination-btn" disabled>
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button id="cardsNextPage" class="pagination-btn" disabled>
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Card Modal -->
+    <div id="addCardModal" class="modal">
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3 id="addCardModalTitle">Thêm thẻ mới</h3>
+                <button type="button" class="modal-close" onclick="chromeManager.hideModal('addCardModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addCardForm">
+                    <div class="form-group">
+                        <label for="cardName">Tên thẻ *</label>
+                        <input type="text" id="cardName" name="cardName" required 
+                               placeholder="Nhập tên thẻ...">
+                    </div>
+                    <div class="form-group">
+                        <label for="cardNote">Ghi chú</label>
+                        <textarea id="cardNote" name="cardNote" rows="3" 
+                                  placeholder="Ghi chú về thẻ (tùy chọn)..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="modal-btn modal-btn-secondary" 
+                                onclick="chromeManager.hideModal('addCardModal')">Hủy</button>
+                        <button type="submit" class="modal-btn modal-btn-primary">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Cards for Selected Profiles Modal -->
+    <div id="editCardsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm/Sửa Thẻ cho <span id="editCardsCount">0</span> hồ sơ</h3>
+                <button class="modal-close" onclick="chromeManager.hideModal('editCardsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="selected-profiles-preview" id="editCardsProfiles">
+                    <!-- Selected profiles will be shown here -->
+                </div>
+                
+                <div class="form-group">
+                    <label for="selectedCard">Chọn thẻ:</label>
+                    <select id="selectedCard" name="selectedCard">
+                        <option value="">-- Chọn thẻ --</option>
+                        <option value="remove">🗑️ Gỡ thẻ hiện tại</option>
+                        <!-- Cards sẽ được load động -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-success btn-sm" id="createNewCardForProfiles">
+                        <i class="fas fa-plus"></i> Tạo thẻ mới
+                    </button>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="chromeManager.hideModal('editCardsModal')">
+                    Hủy
+                </button>
+                <button type="button" class="modal-btn modal-btn-primary" id="applyCardChanges">
+                    <i class="fas fa-save"></i> Áp dụng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Groups for Selected Profiles Modal -->
+    <div id="editGroupsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm/Chuyển Nhóm cho <span id="editGroupsCount">0</span> hồ sơ</h3>
+                <button class="modal-close" onclick="chromeManager.hideModal('editGroupsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="selected-profiles-preview" id="editGroupsProfiles">
+                    <!-- Selected profiles will be shown here -->
+                </div>
+                
+                <div class="form-group">
+                    <label for="selectedGroup">Chọn nhóm:</label>
+                    <select id="selectedGroup" name="selectedGroup">
+                        <option value="">-- Không nhóm --</option>
+                        <option value="remove">🗑️ Gỡ khỏi nhóm hiện tại</option>
+                        <!-- Groups sẽ được load động -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-success btn-sm" id="createNewGroupForProfiles">
+                        <i class="fas fa-plus"></i> Tạo nhóm mới
+                    </button>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="chromeManager.hideModal('editGroupsModal')">
+                    Hủy
+                </button>
+                <button type="button" class="modal-btn modal-btn-primary" id="applyGroupChanges">
+                    <i class="fas fa-save"></i> Áp dụng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Bookmarks for Selected Profiles Modal -->
+    <div id="editBookmarksModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm dấu trang cho <span id="editBookmarksCount">0</span> hồ sơ</h3>
+                <button class="modal-close" onclick="chromeManager.hideModal('editBookmarksModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="selected-profiles-preview" id="editBookmarksProfiles">
+                    <!-- Selected profiles will be shown here -->
+                </div>
+                
+
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-list"></i> Danh sách dấu trang
+                        <button class="btn btn-success btn-sm" id="addBookmarkRow" style="float: right;">
+                            <i class="fas fa-plus"></i> Thêm
+                        </button>
+                    </label>
+                    <div class="bookmarks-container" id="bookmarksContainer">
+                        <div class="bookmark-row">
+                            <div class="bookmark-input-group">
+                                <label>Tên</label>
+                                <input type="text" class="bookmark-name" placeholder="Nhập tên dấu trang">
+                            </div>
+                            <div class="bookmark-input-group">
+                                <label>URL</label>
+                                <input type="text" class="bookmark-url" placeholder="Nhập URL dấu trang">
+                            </div>
+                            <button class="btn btn-danger btn-sm remove-bookmark">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="bookmark-row">
+                            <div class="bookmark-input-group">
+                                <label>Tên</label>
+                                <input type="text" class="bookmark-name" placeholder="Nhập tên dấu trang">
+                            </div>
+                            <div class="bookmark-input-group">
+                                <label>URL</label>
+                                <input type="text" class="bookmark-url" placeholder="Nhập URL dấu trang">
+                            </div>
+                            <button class="btn btn-danger btn-sm remove-bookmark">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="chromeManager.hideModal('editBookmarksModal')">
+                    Hủy
+                </button>
+                <button type="button" class="modal-btn modal-btn-primary" id="applyBookmarks">
+                    <i class="fas fa-bookmark"></i> Thêm
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Tabs for Selected Profiles Modal -->
+    <div id="editTabsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quản lý Tabs cho <span id="editTabsCount">0</span> hồ sơ</h3>
+                <button class="modal-close" onclick="chromeManager.hideModal('editTabsModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="selected-profiles-preview" id="editTabsProfiles">
+                    <!-- Selected profiles will be shown here -->
+                </div>
+                
+                <!-- Tab Action Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-cog"></i> Chọn hành động
+                    </label>
+                    <select id="tabActionType" class="form-control" onchange="chromeManager && chromeManager.handleTabActionChange()">
+                        <option value="add">Thêm tabs mới</option>
+                        <option value="manage">Quản lý tabs hiện có</option>
+                    </select>
+                </div>
+
+                <!-- Add New Tabs Section -->
+                <div id="addTabsSection" class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-browser"></i> Danh sách URL tabs
+                        <button class="btn btn-success btn-sm" id="addTabRow" style="float: right;">
+                            <i class="fas fa-plus"></i> Thêm
+                        </button>
+                    </label>
+                    <div class="tabs-container" id="tabsContainer">
+                        <div class="tab-row">
+                            <div class="tab-input-group">
+                                <label>URL</label>
+                                <input type="text" class="tab-url" placeholder="Nhập URL tab">
+                            </div>
+                            <button class="btn btn-danger btn-sm remove-tab">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="tab-row">
+                            <div class="tab-input-group">
+                                <label>URL</label>
+                                <input type="text" class="tab-url" placeholder="Nhập URL tab">
+                            </div>
+                            <button class="btn btn-danger btn-sm remove-tab">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manage Existing Tabs Section -->
+                <div id="manageTabsSection" class="form-group" style="display: none;">
+                    <label class="form-label">
+                        <i class="fas fa-trash"></i> Chế độ xóa
+                    </label>
+                    <div class="tab-delete-options">
+                        <div class="form-check">
+                            <input type="radio" id="deleteAll" name="deleteMode" value="all">
+                            <label for="deleteAll">Xóa tất cả tabs</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" id="deleteByContent" name="deleteMode" value="content" checked>
+                            <label for="deleteByContent">Xóa theo URL có chứa nội dung</label>
+                        </div>
+                        <div class="form-check">
+                            <input type="radio" id="deleteByPattern" name="deleteMode" value="pattern">
+                            <label for="deleteByPattern">Xóa theo mẫu URL</label>
+                        </div>
+                    </div>
+                    
+                    <div id="deleteContentSection" class="form-group">
+                        <label>Nội dung URL cần xóa:</label>
+                        <input type="text" id="deleteContent" class="form-control" placeholder="VD: facebook.com">
+                    </div>
+                    
+                    <div id="deletePatternSection" class="form-group" style="display: none;">
+                        <label>Mẫu URL cần xóa:</label>
+                        <input type="text" id="deletePattern" class="form-control" placeholder="VD: https://www.facebook.com/*">
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="chromeManager.hideModal('editTabsModal')">
+                    Hủy
+                </button>
+                <button type="button" class="modal-btn modal-btn-primary" id="applyTabs">
+                    <i class="fas fa-browser"></i> Áp dụng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Import Proxy Modal -->
+    <div id="bulkImportProxyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-list"></i> Thêm/Sửa Proxy Cho <span id="bulkImportProxyCount">0</span> hồ sơ</h3>
+                <button class="modal-close" onclick="chromeManager.hideModal('bulkImportProxyModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Selected Profiles Preview -->
+                <div id="bulkImportProxyProfiles" class="selected-profiles-preview">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+
+                <!-- Proxy Source Selection -->
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-cog"></i> Chọn nguồn proxy
+                    </label>
+                    <select id="proxySourceType" class="form-control" onchange="chromeManager.handleProxySourceChange()">
+                        <option value="manual">Nhập danh sách proxy mới</option>
+                        <option value="existing">Lấy proxy có sẵn từ hệ thống</option>
+                        <option value="remove">Gỡ bỏ proxy (không dùng proxy)</option>
+                    </select>
+                </div>
+
+                <!-- Manual Proxy Input Section -->
+                <div id="manualProxySection" class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-list"></i> Danh sách Proxy
+                        <span class="form-label-hint">(Mỗi dòng một proxy)</span>
+                    </label>
+                    <textarea 
+                        id="bulkProxyList" 
+                        class="form-control" 
+                        rows="10" 
+                        placeholder="Nhập danh sách proxy, mỗi dòng một proxy:&#10;&#10;Định dạng 1: ip:port:username:password&#10;192.168.1.1:8080:user:pass&#10;&#10;Định dạng 2: ip:port (không auth)&#10;192.168.1.2:8080&#10;&#10;Định dạng 3: URL&#10;http://user:pass@192.168.1.3:8080"
+                        oninput="chromeManager.previewBulkProxies()"
+                    ></textarea>
+                </div>
+
+                <!-- Existing Proxy Selection Section -->
+                <div id="existingProxySection" class="form-group" style="display: none;">
+                    <label class="form-label">
+                        <i class="fas fa-server"></i> Chọn proxy có sẵn
+                        <span class="form-label-hint">Chọn các proxy từ danh sách có sẵn</span>
+                    </label>
+                    <div class="existing-proxy-grid" id="existingProxyGrid">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Remove Proxy Section -->
+                <div id="removeProxySection" class="form-group" style="display: none;">
+                    <div class="info-box info-box-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                            <strong>Gỡ bỏ proxy</strong>
+                            <p>Tất cả profiles đã chọn sẽ được cấu hình để không sử dụng proxy nào.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-cogs"></i> Cách phân bổ proxy
+                    </label>
+                    <select id="bulkProxyMethod" class="form-control">
+                        <option value="sequential">Tuần tự - Mỗi profile một proxy khác nhau</option>
+                        <option value="random">Ngẫu nhiên - Phân bổ ngẫu nhiên</option>
+                        <option value="single">Một cho tất cả - Tất cả dùng proxy đầu tiên</option>
+                    </select>
+                </div>
+
+                <!-- Proxy Preview -->
+                <div id="bulkProxyPreview" class="proxy-preview" style="display: none;">
+                    <div class="preview-header">
+                        <i class="fas fa-eye"></i>
+                        <span>Xem trước: <span id="bulkPreviewCount">0</span> proxy hợp lệ</span>
+                    </div>
+                    <div class="preview-content" id="bulkProxyPreviewList">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="chromeManager.hideModal('bulkImportProxyModal')">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button type="button" class="modal-btn modal-btn-info" id="checkBulkProxiesBtn" onclick="chromeManager.checkBulkProxies()">
+                    <i class="fas fa-flask"></i> Kiểm tra Proxy
+                </button>
+                <button type="button" class="modal-btn modal-btn-primary" id="applyBulkProxyChanges" onclick="chromeManager.applyBulkProxyChanges()">
+                    <i class="fas fa-upload"></i> Áp dụng
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Remove Proxy Confirmation Modal -->
+    <div id="removeProxyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-unlink"></i> 
+                    Gỡ bỏ proxy
+                </h3>
+            </div>
+            <div class="modal-body">
+                <p id="removeProxyMessage">
+                    Bạn có chắc chắn muốn gỡ bỏ proxy khỏi các hồ sơ đã chọn?
+                </p>
+                <div class="selected-count" id="removeProxyCount">
+                    <!-- Count will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-secondary" id="cancelRemoveProxyBtn">
+                    Hủy
+                </button>
+                <button type="button" class="modal-btn modal-btn-primary" id="confirmRemoveProxyBtn">
+                    Gỡ bỏ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteConfirmModal" class="modal">
+        <div class="modal-content confirm-modal">
+            <div class="confirm-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="confirm-content">
+                <h3 class="confirm-title">Xác nhận xóa hồ sơ</h3>
+                <p class="confirm-message" id="deleteConfirmMessage">
+                    Bạn có chắc chắn muốn xóa các hồ sơ đã chọn?
+                </p>
+                <div class="confirm-details" id="deleteConfirmDetails">
+                    <!-- Profile list will be populated here -->
+                </div>
+                <div class="confirm-warning">
+                    <div class="warning-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <strong>Cảnh báo quan trọng</strong>
+                    </div>
+                    <p>Tất cả dữ liệu Chrome của các hồ sơ này sẽ bị xóa vĩnh viễn:</p>
+                    <ul class="warning-list">
+                        <li><i class="fas fa-bookmark"></i> Bookmarks</li>
+                        <li><i class="fas fa-history"></i> Lịch sử duyệt web</li>
+                        <li><i class="fas fa-cookie"></i> Cookies và Session</li>
+                        <li><i class="fas fa-key"></i> Mật khẩu đã lưu</li>
+                        <li><i class="fas fa-puzzle-piece"></i> Dữ liệu Extensions</li>
+                        <li><i class="fas fa-database"></i> Cache và dữ liệu khác</li>
+                    </ul>
+                    <div class="warning-footer">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <strong>Hành động này KHÔNG THỂ HOÀN TÁC!</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="confirm-actions">
+                <button class="confirm-btn confirm-btn-cancel" id="cancelDeleteBtn">
+                    <i class="fas fa-times"></i>
+                    <span>Hủy bỏ</span>
+                </button>
+                <button class="confirm-btn confirm-btn-danger" id="confirmDeleteBtn">
+                    <i class="fas fa-trash-alt"></i>
+                    <span>Xóa vĩnh viễn</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Management Modal -->
+    <div id="cardManagementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Quản lý Thẻ</h3>
+                <button class="modal-close" onclick="chromeManager.hideModal('cardManagementModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="card-management-content">
+                    <div class="card-actions-header">
+                        <button class="btn btn-primary" id="addNewCardBtn">
+                            <i class="fas fa-plus"></i> Thêm thẻ mới
+                        </button>
+                    </div>
+                    <div class="cards-table-container">
+                        <table class="cards-table">
+                            <thead>
+                                <tr>
+                                    <th>Tên thẻ</th>
+                                    <th>Ghi chú</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cardsTableBody">
+                                <!-- Cards will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="pagination-info" id="cardsPaginationInfo">
+                        <!-- Pagination info will be shown here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Card Modal -->
+    <div id="cardFormModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="cardFormTitle">Thêm thẻ mới</h3>
+                <button class="modal-close" onclick="chromeManager.hideModal('cardFormModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="cardForm">
+                    <div class="form-group">
+                        <label for="cardName">Tên thẻ: <span class="required">*</span></label>
+                        <input type="text" id="cardName" name="cardName" required 
+                               placeholder="Nhập tên thẻ..." maxlength="50">
+                    </div>
+                    <div class="form-group">
+                        <label for="cardNote">Ghi chú:</label>
+                        <textarea id="cardNote" name="cardNote" rows="3" 
+                                  placeholder="Ghi chú về thẻ (tùy chọn)..." maxlength="200"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="modal-btn modal-btn-secondary" onclick="chromeManager.hideModal('cardFormModal')">
+                    Hủy
+                </button>
+                <button type="submit" class="modal-btn modal-btn-primary" form="cardForm">
+                    <i class="fas fa-save"></i> Lưu thẻ
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirm Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i class="fas fa-question-circle"></i>
+                    <span id="confirmTitle">Xác nhận</span>
+                </h3>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Bạn có chắc chắn muốn thực hiện hành động này?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="modal-btn modal-btn-secondary" id="confirmCancel">
+                    <i class="fas fa-times"></i> Hủy
+                </button>
+                <button type="button" class="modal-btn modal-btn-primary" id="confirmOk">
+                    <i class="fas fa-check"></i> Đồng ý
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

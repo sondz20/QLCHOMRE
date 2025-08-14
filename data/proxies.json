@@ -1,0 +1,92 @@
+[
+  {
+    "id": "proxy_1754969521533",
+    "host": "38.180.149.107",
+    "port": 17521,
+    "username": "moine-ssid-w9SpDsWrBR",
+    "password": "adasdasdasda",
+    "type": "http",
+    "created": "2025-08-12T03:32:01.533Z",
+    "status": "working",
+    "responseTime": 0,
+    "lastChecked": "2025-08-14T09:17:45.679Z",
+    "ip": "173.175.207.233"
+  },
+  {
+    "id": "proxy_1754969699060",
+    "host": "160.250.166.88",
+    "port": 20121,
+    "username": "zCZAzW",
+    "password": "ddinlz",
+    "type": "http",
+    "created": "2025-08-12T03:34:59.060Z",
+    "status": "working",
+    "responseTime": 0,
+    "lastChecked": "2025-08-14T09:17:45.680Z",
+    "ip": "113.185.53.129"
+  },
+  {
+    "id": "proxy_1754969699061",
+    "host": "160.250.166.88",
+    "port": 20063,
+    "username": "zCZAzW",
+    "password": "ddinlz",
+    "type": "http",
+    "created": "2025-08-12T03:34:59.061Z",
+    "status": "working",
+    "responseTime": 0,
+    "lastChecked": "2025-08-14T09:17:45.680Z",
+    "ip": "113.185.49.10"
+  },
+  {
+    "id": "proxy_1754969699062",
+    "host": "160.250.166.88",
+    "port": 20045,
+    "username": "zCZAzW",
+    "password": "ddinlz",
+    "type": "http",
+    "created": "2025-08-12T03:34:59.062Z",
+    "status": "working",
+    "responseTime": 0,
+    "lastChecked": "2025-08-14T09:17:45.680Z",
+    "ip": "113.185.48.235"
+  },
+  {
+    "id": "proxy_1754969699071",
+    "host": "160.250.166.88",
+    "port": 20025,
+    "username": "zCZAzW",
+    "password": "ddinlz",
+    "type": "http",
+    "created": "2025-08-12T03:34:59.071Z",
+    "status": "working",
+    "responseTime": 0,
+    "lastChecked": "2025-08-14T09:17:45.680Z",
+    "ip": "113.185.49.130"
+  },
+  {
+    "id": "proxy_1754969699077",
+    "host": "160.250.166.88",
+    "port": 20101,
+    "username": "zCZAzW",
+    "password": "ddinlz",
+    "type": "http",
+    "created": "2025-08-12T03:34:59.077Z",
+    "status": "working",
+    "responseTime": 0,
+    "lastChecked": "2025-08-14T09:17:45.680Z",
+    "ip": "113.185.51.206"
+  },
+  {
+    "id": "proxy_1755139066226_2mxze",
+    "host": "160.250.166.88",
+    "port": "20152",
+    "username": "kDZFrk",
+    "password": "pIolCW",
+    "type": "http",
+    "created": "2025-08-14T02:37:46.226Z",
+    "status": "working",
+    "responseTime": 0,
+    "lastChecked": "2025-08-14T09:17:45.688Z"
+  }
+]
