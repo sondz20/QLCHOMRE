@@ -3,7 +3,20 @@ const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
-const AutoUpdater = require(path.join(__dirname, '..', 'auto-updater'));
+
+// Try-catch import cho auto-updater  
+let AutoUpdater = null;
+try {
+    AutoUpdater = require(path.join(__dirname, '..', 'auto-updater'));
+} catch (error) {
+    console.warn('⚠️  Auto-updater not available:', error.message);
+    // Fallback: tạo mock class
+    AutoUpdater = class {
+        start() { console.log('Auto-updater disabled'); }
+        manualCheckForUpdates() { console.log('Manual update check disabled'); }
+        cleanup() {}
+    };
+}
 
 class ChromeManager {
   constructor() {

@@ -1,9 +1,9 @@
-Chrome Manager v1.0.6 - 15/8/2025
+Chrome Manager v1.0.7 - 15/8/2025
 
 🎉 TÍNH NĂNG VÀ CẢI TIẾN MỚI:
 ========================================
 
-✅ CẬP NHẬT PHIÊN BẢN 1.0.6:
+✅ CẬP NHẬT PHIÊN BẢN 1.0.7:
 • Cải thiện hiệu suất và ổn định quản lý Chrome
 • Sửa lỗi nhỏ từ phiên bản trước
 • Tối ưu hóa trải nghiệm người dùng
@@ -22,7 +22,7 @@ Chrome Manager v1.0.6 - 15/8/2025
 • Performance optimizations
 
 📅 Ngày phát hành: 15/8/2025
-🏷️ Phiên bản: 1.0.6
+🏷️ Phiên bản: 1.0.7
 👨‍💻 Phát triển bởi: Chrome Manager Team
 
 🔗 Tải xuống tại: https://toolfb.vn/CHROME/

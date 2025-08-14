@@ -1,6 +1,6 @@
 {
   "name": "chrome-manager",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Desktop application for managing Chrome profiles, proxies, and extensions",
   "main": "src/main.js",
   "scripts": {
