@@ -5,6 +5,8 @@
 - **Công nghệ**: Electron + Node.js + Puppeteer
 - **Ngôn ngữ giao diện**: Tiếng Việt (UTF-8)
 - **Mục đích**: Quản lý Chrome profiles, proxies, extensions
+- **GitHub Repository**: https://github.com/sondz20/QLCHOMRE.git
+- **Branch chính**: master
 
 ## Kinh nghiệm làm việc với User
 
@@ -151,6 +153,14 @@ QLCHROME/
 - PowerShell cho file operations đơn giản  
 - grep_search cho tìm patterns
 - file_search cho locate files
+- Git version control với GitHub integration
+
+### 10a. Git Workflow
+- **Remote**: https://github.com/sondz20/QLCHOMRE.git
+- **Branch strategy**: master branch cho production
+- **Commit style**: Descriptive messages in Vietnamese
+- **Push frequency**: After major changes/features
+- **.gitignore**: Configured to exclude temp files và profile data
 
 ### 11. SMART FILE MANAGEMENT
 **Tạo script tự động xóa file an toàn:**
