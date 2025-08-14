@@ -174,6 +174,49 @@ const protectedFiles = [
 ];
 ```
 
+### 12. COMMERCIAL DISTRIBUTION - Học từ file tham khảo
+**Build & Release System từ TOOLFB.VN project:**
+
+#### 🚀 NPM Scripts đã học:
+```json
+"scripts": {
+  "dist": "node auto-dist.js",           // Main build & release script
+  "build-only": "electron-builder --publish=never", // Build không upload
+  "quick-dist": "node quick-dist.js",    // Build nhanh
+  "version:patch": "echo 1 | node auto-dist.js",   // Auto patch version
+  "version:minor": "echo 2 | node auto-dist.js",   // Auto minor version  
+  "version:major": "echo 3 | node auto-dist.js",   // Auto major version
+  "git:tag": "git tag -l | sort",        // List git tags
+  "git:status": "git status --porcelain" // Git status check
+}
+```
+
+#### 🔧 Auto-dist.js Features:
+- **Version Management**: Tự động bump version (patch/minor/major)
+- **Git Integration**: Auto commit, tag, push lên GitHub
+- **Build Process**: Clean dist → Build electron → Verify files
+- **File Generation**: release-notes.txt, version.txt cho auto-update
+- **User Interaction**: Interactive prompts cho version choice
+
+#### 📦 Electron Builder Config học được:
+- **NSIS Installer**: oneClick: false, allowToChangeInstallationDirectory: true
+- **File Optimization**: Loại trừ unnecessary files (test, docs, .d.ts)
+- **Icon Management**: Consistent icon cho installer/uninstaller
+- **Artifact Naming**: Custom setup filename (Chrome-Manager-Setup.exe)
+- **Code Signing**: Cấu hình cho production (certificates, verification)
+
+#### 🎯 Production Ready Features:
+- **Desktop Shortcuts**: createDesktopShortcut, createStartMenuShortcut
+- **Auto-launch**: runAfterFinish option
+- **Uninstaller**: deleteAppDataOnUninstall configuration
+- **Publisher Info**: publisherName cho Windows trust
+
+#### 💼 Commercial Considerations:
+- **Product Naming**: "Chrome Manager - Quản lý Chrome Pro"
+- **App ID**: com.chromemanager.app (unique identifier)
+- **Version Strategy**: Semantic versioning với clear changelog
+- **User Experience**: Vietnamese UI, professional branding
+
 ## Cập nhật lần cuối: 14/08/2025
 **Lesson learned**: Không xóa PROJECT_MEMORY.md khi user nói "xóa file dư thừa"
 **Style preferences**: UI 100% tiếng Việt, table-based design, clean code architecture

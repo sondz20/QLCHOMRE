@@ -7,7 +7,16 @@
     "start": "electron .",
     "dev": "electron . --dev",
     "build": "electron-builder",
-    "dist": "electron-builder --publish=never"
+    "build-only": "electron-builder --publish=never", 
+    "dist": "node auto-dist.js",
+    "dist-old": "electron-builder --publish=never",
+    "quick-dist": "node quick-dist.js",
+    "version:patch": "echo 1 | node auto-dist.js",
+    "version:minor": "echo 2 | node auto-dist.js", 
+    "version:major": "echo 3 | node auto-dist.js",
+    "git:tag": "git tag -l | sort",
+    "git:status": "git status --porcelain",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "chrome",
@@ -33,17 +42,58 @@
   },
   "build": {
     "appId": "com.chromemanager.app",
-    "productName": "Chrome Manager",
+    "productName": "Chrome Manager - Quản lý Chrome Pro",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
     "files": [
       "src/**/*",
-      "node_modules/**/*"
+      "data/extensions.json",
+      "data/profiles.json", 
+      "data/proxies.json",
+      "assets/**/*",
+      "package.json",
+      "node_modules/**/*",
+      "!node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+      "!node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+      "!node_modules/*.d.ts",
+      "!node_modules/.bin",
+      "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+      "!.editorconfig",
+      "!**/._*",
+      "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+      "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+      "!**/{appveyor.yml,.travis.yml,circle.yml}",
+      "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}"
     ],
     "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
-    }
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        }
+      ],
+      "requestedExecutionLevel": "asInvoker",
+      "publisherName": "Chrome Manager Team",
+      "certificateFile": null,
+      "certificateSha1": null,
+      "signingHashAlgorithms": [],
+      "verifyUpdateCodeSignature": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Chrome Manager",
+      "displayLanguageSelector": false,
+      "installerLanguages": ["en"],
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": false,
+      "artifactName": "Chrome-Manager-Setup.exe"
+    },
+    "publish": null
   }
 }
